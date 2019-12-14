@@ -99,7 +99,8 @@ class GreetingPlugin(Plugin):
         self.adapter.bot.sendMessage(
             chat_id=chat_id,
             text=greeting_text,
-            parse_mode='Markdown')
+            parse_mode='Markdown',
+            disable_web_page_preview=True)
 
     def on_left_chat_member(self, update):
         message = update.effective_message
