@@ -106,6 +106,9 @@ class GreetingPlugin(Plugin):
     def on_left_chat_member(self, update):
         message = update.effective_message
         chat_id = message.chat.id
+        username = message.left_chat_member.username
+        if username is not None and username.endswith('_bot'):
+            return
         user = GreetingPlugin.user_link(message.left_chat_member)
         greeting = ChatGreeting.by_chat_id(chat_id)
         if greeting:
@@ -115,8 +118,9 @@ class GreetingPlugin(Plugin):
         message = update.effective_message
         chat_id = message.chat.id
         greeting = ChatGreeting.by_chat_id(chat_id)
-        if greeting:
-            self.send_greeting(chat_id, greeting, message.new_chat_members)
+        users = [user for user in message.new_chat_members if not user.username.endswith('_bot')]
+        if len(users) and greeting:
+            self.send_greeting(chat_id, greeting, users)
 
     def can_user_change_info(self, message, user_id):
         member = message.chat.get_member(user_id=user_id)
