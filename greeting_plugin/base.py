@@ -4,7 +4,7 @@ from marvinbot.utils import trim_markdown
 from marvinbot.handlers import CommandHandler, CommonFilters, MessageHandler
 from jinja2 import Template
 
-from greeting_plugin.models import ChatGreeting, ChatMemberGreeting
+from greeting_plugin.models import ChatGreeting
 import logging
 
 log = logging.getLogger(__name__)
