@@ -105,9 +105,11 @@ class GreetingPlugin(Plugin):
 
     def on_left_chat_member(self, update):
         message = update.effective_message
+        chat_id = message.chat.id
         user = GreetingPlugin.user_link(message.left_chat_member)
-
-        message.reply_text(text='Good bye {}'.format(user), parse_mode='Markdown')
+        greeting = ChatGreeting.by_chat_id(chat_id)
+        if greeting:
+            message.reply_text(text='Good bye {}'.format(user), parse_mode='Markdown')
 
     def on_new_chat_members(self, update):
         message = update.effective_message
