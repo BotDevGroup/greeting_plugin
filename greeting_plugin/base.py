@@ -52,8 +52,10 @@ class GreetingPlugin(Plugin):
 
         replying = bool(message.reply_to_message)
         if not replying:
-            greeting = ChatGreeting.by_chat_id(chat_id)
-            self.send_greeting(chat_id, greeting, [message.from_user])
+            if greeting:
+                self.send_greeting(chat_id, greeting, [message.from_user])
+            else:
+                message.reply_text(text='❌ No greeting has been added.')
             return
 
         if not self.can_user_change_info(message, user_id):
@@ -94,8 +96,7 @@ class GreetingPlugin(Plugin):
         return template.render(names=', '.join(names))
 
     def send_greeting(self, chat_id, greeting, users):
-        names = [GreetingPlugin.user_link(user) for user in users]
-        greeting_text = self.interpolate(greeting.greeting_text, users) if greeting is not None else 'Welcome {}'.format(', '.join(names))
+        greeting_text = self.interpolate(greeting.greeting_text, users)
         self.adapter.bot.sendMessage(
             chat_id=chat_id,
             text=greeting_text,
@@ -112,7 +113,8 @@ class GreetingPlugin(Plugin):
         message = update.effective_message
         chat_id = message.chat.id
         greeting = ChatGreeting.by_chat_id(chat_id)
-        self.send_greeting(chat_id, greeting, message.new_chat_members)
+        if greeting:
+            self.send_greeting(chat_id, greeting, message.new_chat_members)
 
     def can_user_change_info(self, message, user_id):
         member = message.chat.get_member(user_id=user_id)
