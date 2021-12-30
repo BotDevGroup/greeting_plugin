@@ -118,7 +118,7 @@ class GreetingPlugin(Plugin):
         message = update.effective_message
         chat_id = message.chat.id
         greeting = ChatGreeting.by_chat_id(chat_id)
-        users = [user for user in message.new_chat_members if not user.username.endswith('_bot')]
+        users = [user for user in message.new_chat_members if not user.username or not user.username.endswith('_bot')]
         if len(users) and greeting:
             self.send_greeting(chat_id, greeting, users)
 
